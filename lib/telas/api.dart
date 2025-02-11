@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:youtube/model/video.dart';
 
-const CHAVE_YOUTUBE_API = "AIzaSyAzNtpZcIrjoaHypmj29E7UoEtqUXOUQes";
+const CHAVE_YOUTUBE_API = "AIzaSyCDBqFO-OMCNEEiJlIj0xZ8yhcZ7zIgh2s";
 const ID_CANAL = "UCVHFbqXqoYvEWM1Ddxl0QDg";
 const URL_BASE = "https://www.googleapis.com/youtube/v3/";
 
 class Api {
-  pesquisar(String pesquisa) async {
+  Future<List<Video>> pesquisar(String pesquisa) async {
     http.Response response = await http.get(Uri.parse(
         "${URL_BASE}search?part=snippet&type=video&maxResults=20&order=date&q=${pesquisa}&key=${CHAVE_YOUTUBE_API}&channelId=${ID_CANAL}"));
 
@@ -16,15 +16,12 @@ class Api {
       Map<String, dynamic> dadosJson = json.decode(response.body);
       List<Video> videos = dadosJson["items"].map<Video>((map) {
         return Video.fromJson(map);
-      }
-      ).toList();
+      }).toList();
 
-      for (var video in videos) {
-        print("titulo: ${video.titulo}");
-      }
-
+      return videos;
     } else {
       print("Erro");
+      return [];
     }
   }
 }

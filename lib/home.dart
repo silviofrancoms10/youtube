@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube/custom_search_delegate.dart';
 import 'package:youtube/telas/biblioteca.dart';
 import 'package:youtube/telas/explorar.dart';
 import 'package:youtube/telas/inicio.dart';
@@ -12,14 +13,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
+  String _resultado = "";
   int _indiceAtual = 0;
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> telas = [
-      Inicio(),
+      Inicio(_resultado),
       Explorar(),
       Inscricoes(),
       Biblioteca()
@@ -36,14 +36,23 @@ class _HomeState extends State<Home> {
         ),
         actions: [
           IconButton(
+              onPressed: () async {
+                String? res = await showSearch(
+                    context: context, delegate: CustomSearchDelegate());
+                setState(() {
+                  _resultado = res!;
+                });
+                print("resultado: digitado $res");
+              },
+              icon: Icon(Icons.search_rounded)),
+          /* 
+          IconButton(
               onPressed: () => print("ação videocam"),
               icon: Icon(Icons.videocam)),
           IconButton(
-              onPressed: () => print("ação pesquisa"),
-              icon: Icon(Icons.search_rounded)),
-          IconButton(
               onPressed: () => print("ação conta"),
-              icon: Icon(Icons.account_circle))
+              icon: Icon(Icons.account_circle)) 
+              */
         ],
       ),
       body: Container(
@@ -52,7 +61,7 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indiceAtual,
-        onTap: (indice){
+        onTap: (indice) {
           setState(() {
             _indiceAtual = indice;
           });
@@ -66,10 +75,8 @@ class _HomeState extends State<Home> {
         // showSelectedLabels: true,
         // showUnselectedLabels: true,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home), label: "Início"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.explore), label: "Explorar"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Início"),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: "Explorar"),
           BottomNavigationBarItem(
               icon: Icon(Icons.subscriptions), label: "Inscrições"),
           BottomNavigationBarItem(
